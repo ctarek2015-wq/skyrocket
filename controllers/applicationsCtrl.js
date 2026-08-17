@@ -49,5 +49,35 @@ const deleteApp = async (req, res) => {
     console.log(err.message);
   }
 };
+const editApp = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    const application = user.applications.id(req.params.appId);
+    await user.save();
+    res.render("applications/editApp.ejs", { application });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
 
-module.exports = { index, newApp, addApp, showApp, deleteApp };
+const submitEdit = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    const application = user.applications.id(req.params.appId);
+    application.set(req.body);
+    await user.save();
+    res.redirect(`/users/${req.params.id}/applications/${req.params.appId}`);
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+module.exports = {
+  index,
+  newApp,
+  addApp,
+  showApp,
+  deleteApp,
+  editApp,
+  submitEdit,
+};
