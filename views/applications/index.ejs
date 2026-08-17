@@ -11,6 +11,21 @@
 
 <body>
   <h1>Your Apps</h1>
+  <ul>
+    <% applications.forEach((app)=>{%>
+    <li>
+      <a href="/users/<%=user._id%>/applications/<%=app._id%>">
+        <%= app.title %> at <%= app.company %>
+      </a>
+    </li>
+
+    <%})%>
+
+  </ul>
+
+
+
+  <a href="/users/<%=user._id%>/applications/new">add new app</a>
 </body>
 
 </html>
