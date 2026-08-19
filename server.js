@@ -19,6 +19,11 @@ const addUserToViews = require("./middleware/addUserToViews");
 const authCtrl = require("./controllers/authCtrl");
 const applicationsCtrl = require("./controllers/applicationsCtrl");
 
+//Routers
+const authRouter = require("./routes/authRouter");
+const applicationsRouter = require("./routes/applicationsRouter");
+const pagesRouter = require("./routes/pagesRouter");
+
 // Set the port from environment variable or default to 3000
 const port = process.env.PORT ? process.env.PORT : "3000";
 
@@ -43,33 +48,15 @@ app.use(
 app.use(addUserToViews);
 
 // PUBLIC ROUTES
-app.get("/", async (req, res) => {
-  if (req.session.user) {
-    res.redirect(`/users/${req.session.user._id}/applications`);
-  } else {
-    res.render("index.ejs");
-  }
-});
-
-app.get("/auth/sign-up", authCtrl.signup);
-app.post("/auth/sign-up", authCtrl.register);
-app.get("/auth/sign-in", authCtrl.signin);
-app.post("/auth/sign-in", authCtrl.login);
+app.use("", pagesRouter);
+app.use("/auth", authRouter);
 
 // Customer middleware
 app.use(isSignedIn);
 
 // PRIVATE ROUTES
-app.get("/auth/sign-out", authCtrl.signout);
-
 // Applications
-app.get("/users/:id/applications", applicationsCtrl.index);
-app.get("/users/:id/applications/new", applicationsCtrl.newApp);
-app.post("/users/:id/applications", applicationsCtrl.addApp);
-app.get("/users/:id/applications/:appId", applicationsCtrl.showApp);
-app.delete("/users/:id/applications/:appId", applicationsCtrl.deleteApp);
-app.get("/users/:id/applications/:appId/edit", applicationsCtrl.editApp);
-app.put("/users/:id/applications/:appId", applicationsCtrl.submitEdit);
+app.use("/users/:id/applications", applicationsRouter);
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
